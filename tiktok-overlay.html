@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Overlay Regalos Minecraft</title>
+
+<style>
+  body {
+    margin: 0;
+    background: transparent;
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow: hidden;
+  }
+
+  /* PANEL EDITOR */
+  .editor {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 420px;
+    background: rgba(0,0,0,0.85);
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 9999;
+  }
+
+  .editor textarea {
+    width: 100%;
+    height: 260px;
+    background: #111;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    resize: none;
+    font-family: monospace;
+    font-size: 12px;
+  }
+
+  .editor button {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px;
+    background: #00ff88;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  /* OVERLAY */
+  .overlay {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    display: flex;
+    gap: 16px;
+  }
+
+  .gift {
+    flex: 1;
+    background: rgba(20,20,20,0.9);
+    border: 2px solid #00ff88;
+    border-radius: 14px;
+    padding: 10px;
+    text-align: center;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .gift img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 6px;
+  }
+
+  .gift-name {
+    color: #00ff88;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .description {
+    font-size: 13px;
+    margin: 4px 0;
+  }
+
+  .reward-img {
+    width: 48px;
+    height: 48px;
+    margin-top: 4px;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- EDITOR JSON -->
+<div class="editor">
+  <strong>Editar regalos (JSON)</strong>
+  <textarea id="jsonInput">
+[
+  {
+    "giftImage": "https://i.imgur.com/6XKQ9kP.png",
+    "giftName": "Rosa",
+    "rewardImage": "https://i.imgur.com/0Z8FQYQ.png",
+    "description": "+1 Diamante"
+  },
+  {
+    "giftImage": "https://i.imgur.com/W1ZJk4R.png",
+    "giftName": "Cohete",
+    "rewardImage": "https://i.imgur.com/9RZ6Xzv.png",
+    "description": "Spawn Creeper"
+  },
+  {
+    "giftImage": "https://i.imgur.com/z7mX8sL.png",
+    "giftName": "Corona",
+    "rewardImage": "https://i.imgur.com/9Z3K6RJ.png",
+    "description": "Espada encantada"
+  },
+  {
+    "giftImage": "https://i.imgur.com/Y3GQXhF.png",
+    "giftName": "León",
+    "rewardImage": "https://i.imgur.com/Kq5bY2s.png",
+    "description": "Lluvia de lava"
+  },
+  {
+    "giftImage": "https://i.imgur.com/vmN5b4F.png",
+    "giftName": "Universo",
+    "rewardImage": "https://i.imgur.com/Y4n9R4p.png",
+    "description": "Boss final"
+  }
+]
+  </textarea>
+  <button onclick="loadGifts()">Actualizar overlay</button>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<script>
+  let gifts = [];
+  let index = 0;
+  const overlay = document.getElementById("overlay");
+
+  function loadGifts() {
+    try {
+      gifts = JSON.parse(document.getElementById("jsonInput").value);
+      index = 0;
+      render();
+    } catch (e) {
+      alert("JSON inválido");
+    }
+  }
+
+  function render() {
+    overlay.innerHTML = "";
+
+    for (let i = 0; i < 4; i++) {
+      const gift = gifts[(index + i) % gifts.length];
+
+      const div = document.createElement("div");
+      div.className = "gift";
+
+      div.innerHTML = `
+        <img src="${gift.giftImage}">
+        <div class="gift-name">${gift.giftName}</div>
+        <div class="description">${gift.description}</div>
+        <img class="reward-img" src="${gift.rewardImage}">
+      `;
+
+      overlay.appendChild(div);
+    }
+
+    index = (index + 1) % gifts.length;
+  }
+
+  loadGifts();
+  setInterval(render, 5000); // rotación cada 5 segundos
+</script>
+
+</body>
+</html>
