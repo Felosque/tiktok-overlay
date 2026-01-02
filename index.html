@@ -10,8 +10,8 @@ body {
   margin: 0;
   background: transparent;
   overflow: hidden;
-  font-family: 'Minecraftia', Arial, sans-serif;
-  color: #fff;
+  font-family: Arial, sans-serif;
+  color: #000;
 }
 
 /* ================= EDITOR ================= */
@@ -35,7 +35,7 @@ body {
 
 .editor textarea {
   width: 100%;
-  height: 260px;
+  height: 280px;
   background: #111;
   color: #55ff55;
   border: 2px solid #55ff55;
@@ -55,63 +55,62 @@ body {
   cursor: pointer;
 }
 
-/* ================= OVERLAY ================= */
+/* ================= OVERLAY GRID ================= */
 .overlay {
   position: absolute;
-  bottom: 80px;
+  bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
-  width: 1000px;
-  display: flex;
-  gap: 16px;
+  width: 960px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 14px;
 }
 
-.gift {
-  flex: 1;
-  background: rgba(20,20,20,0.9);
-  border: 3px solid #55ff55;
-  border-radius: 8px;
+/* ================= CARD ================= */
+.card {
+  position: relative;
+  background: #f2f2f2;
+  border-radius: 12px;
   padding: 10px;
-  text-align: center;
-  animation: enter 0.6s ease;
+  animation: fadeIn 0.5s ease;
 }
 
-.gift img {
-  image-rendering: pixelated;
+/* regalo arriba derecha */
+.gift-img {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 36px;
+  height: 36px;
 }
 
-.gift-icon {
-  width: 56px;
-  height: 56px;
+/* recompensa centro */
+.reward-img {
+  width: 100%;
+  height: 90px;
+  object-fit: contain;
+  display: block;
+  margin: 10px auto 4px;
 }
 
-.reward-icon {
-  width: 42px;
-  height: 42px;
-  margin-top: 6px;
-}
-
-.gift-name {
-  margin-top: 6px;
-  color: #55ff55;
-  font-size: 15px;
-}
-
-.description {
+/* descripción */
+.desc {
   font-size: 12px;
-  margin-top: 4px;
-  color: #fff799;
+  text-align: center;
+  font-weight: bold;
 }
 
-/* ================= ANIMATIONS ================= */
-@keyframes enter {
+/* ================= ANIMATION ================= */
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.95);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
   }
 }
 </style>
@@ -121,38 +120,33 @@ body {
 
 <!-- ================= EDITOR ================= -->
 <div class="editor">
-  <h3>Editor de Regalos (JSON)</h3>
+  <h3>Editor de regalos (JSON)</h3>
   <textarea id="jsonInput">
 [
   {
     "giftImage": "https://i.imgur.com/6XKQ9kP.png",
-    "giftName": "Rosa",
     "rewardImage": "https://i.imgur.com/0Z8FQYQ.png",
-    "description": "+1 Diamante"
+    "description": "+1 Armadura de hierro"
   },
   {
     "giftImage": "https://i.imgur.com/W1ZJk4R.png",
-    "giftName": "Cohete",
     "rewardImage": "https://i.imgur.com/9RZ6Xzv.png",
     "description": "Spawn Creeper"
   },
   {
     "giftImage": "https://i.imgur.com/z7mX8sL.png",
-    "giftName": "Corona",
     "rewardImage": "https://i.imgur.com/9Z3K6RJ.png",
     "description": "Espada encantada"
   },
   {
     "giftImage": "https://i.imgur.com/Y3GQXhF.png",
-    "giftName": "León",
     "rewardImage": "https://i.imgur.com/Kq5bY2s.png",
     "description": "Lluvia de lava"
   },
   {
     "giftImage": "https://i.imgur.com/vmN5b4F.png",
-    "giftName": "Universo",
     "rewardImage": "https://i.imgur.com/Y4n9R4p.png",
-    "description": "Invocar jefe final"
+    "description": "Invocar jefe"
   }
 ]
   </textarea>
@@ -163,17 +157,15 @@ body {
 <div class="overlay" id="overlay"></div>
 
 <script>
-/* ======= MODO EDITOR / OVERLAY ======= */
+/* ======= MODO EDITOR ======= */
 const params = new URLSearchParams(window.location.search);
 const editMode = params.get("edit") === "true";
+if (!editMode) document.querySelector(".editor").style.display = "none";
 
-if (!editMode) {
-  document.querySelector(".editor").style.display = "none";
-}
-
-/* ======= LOGICA REGALOS ======= */
+/* ======= LOGICA ======= */
 let gifts = [];
 let index = 0;
+const VISIBLE = 16;
 const overlay = document.getElementById("overlay");
 
 function loadGifts() {
@@ -181,37 +173,34 @@ function loadGifts() {
     gifts = JSON.parse(document.getElementById("jsonInput").value);
     index = 0;
     render();
-  } catch (e) {
+  } catch {
     alert("JSON inválido");
   }
 }
 
 function render() {
-  if (gifts.length === 0) return;
-
   overlay.innerHTML = "";
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < VISIBLE; i++) {
     const gift = gifts[(index + i) % gifts.length];
 
-    const div = document.createElement("div");
-    div.className = "gift";
+    const card = document.createElement("div");
+    card.className = "card";
 
-    div.innerHTML = `
-      <img class="gift-icon" src="${gift.giftImage}">
-      <div class="gift-name">${gift.giftName}</div>
-      <div class="description">${gift.description}</div>
-      <img class="reward-icon" src="${gift.rewardImage}">
+    card.innerHTML = `
+      <img class="gift-img" src="${gift.giftImage}">
+      <img class="reward-img" src="${gift.rewardImage}">
+      <div class="desc">${gift.description}</div>
     `;
 
-    overlay.appendChild(div);
+    overlay.appendChild(card);
   }
 
-  index = (index + 1) % gifts.length;
+  index = (index + VISIBLE) % gifts.length;
 }
 
 loadGifts();
-setInterval(render, 5000); // rotación cada 5s
+setInterval(render, 6000); // rotación
 </script>
 
 </body>
