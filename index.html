@@ -11,7 +11,6 @@ body {
   background: transparent;
   overflow: hidden;
   font-family: Arial, sans-serif;
-  color: #000;
 }
 
 /* ================= EDITOR ================= */
@@ -22,7 +21,7 @@ body {
   width: 420px;
   background: rgba(0,0,0,0.9);
   border: 3px solid #55ff55;
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 10px;
   z-index: 9999;
 }
@@ -50,68 +49,91 @@ body {
   padding: 8px;
   background: #55ff55;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
 }
 
-/* ================= OVERLAY GRID ================= */
+/* ================= GRID ================= */
 .overlay {
   position: absolute;
-  bottom: 40px;
+  top: 40px;
   left: 50%;
   transform: translateX(-50%);
   width: 960px;
+  padding-top: 10px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
   gap: 14px;
 }
 
 /* ================= CARD ================= */
 .card {
   position: relative;
-  background: #f2f2f2;
-  border-radius: 12px;
-  padding: 10px;
-  animation: fadeIn 0.5s ease;
+  background: #e5e5e5;
+  border: 3px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 12px 8px 10px;
+  min-height: 155px;
+  box-shadow: 0 6px 0 #2a2a2a;
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  animation: cardIn 0.8s cubic-bezier(.25,.8,.25,1) forwards;
+  box-sizing: border-box;
 }
 
-/* regalo arriba derecha */
+/* ================= GIFT IMAGE (MAS GRANDE) ================= */
 .gift-img {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 36px;
-  height: 36px;
+  top: -14px;
+  right: -14px;
+  width: 56px;
+  height: 56px;
+  background: #fff;
+  border: 3px solid #3a3a3a;
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 4px 0 #2a2a2a;
+  image-rendering: pixelated;
+  animation: float 2.5s ease-in-out infinite;
 }
 
-/* recompensa centro */
+/* ================= REWARD ================= */
 .reward-img {
   width: 100%;
   height: 90px;
   object-fit: contain;
   display: block;
-  margin: 10px auto 4px;
+  margin: 22px auto 6px;
+  image-rendering: pixelated;
 }
 
-/* descripción */
+/* ================= DESCRIPTION ================= */
 .desc {
-  font-size: 12px;
+  font-size: 13px;
   text-align: center;
   font-weight: bold;
+  color: #2a2a2a;
 }
 
-/* ================= ANIMATION ================= */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
+/* ================= ANIMATIONS ================= */
+@keyframes cardIn {
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0) scale(1);
   }
+}
+
+@keyframes cardOut {
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 </style>
 </head>
@@ -122,31 +144,81 @@ body {
 <div class="editor">
   <h3>Editor de regalos (JSON)</h3>
   <textarea id="jsonInput">
-[
+    [
   {
-    "giftImage": "https://i.imgur.com/6XKQ9kP.png",
-    "rewardImage": "https://i.imgur.com/0Z8FQYQ.png",
-    "description": "+1 Armadura de hierro"
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eba3a9bb85c33e017f3648eaf88d7189~tplv-obj.webp",
+    "rewardImage": "./images/zombie_iron.png",
+    "description": "Armadura de hierro"
   },
   {
-    "giftImage": "https://i.imgur.com/W1ZJk4R.png",
-    "rewardImage": "https://i.imgur.com/9RZ6Xzv.png",
-    "description": "Spawn Creeper"
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/3f02fa9594bd1495ff4e8aa5ae265eef~tplv-obj.webp",
+    "rewardImage": "./images/lanza.png",
+    "description": "Lanza"
   },
   {
-    "giftImage": "https://i.imgur.com/z7mX8sL.png",
-    "rewardImage": "https://i.imgur.com/9Z3K6RJ.png",
-    "description": "Espada encantada"
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/802a21ae29f9fae5abe3693de9f874bd~tplv-obj.webp",
+    "rewardImage": "./images/Daga.png",
+    "description": "Daga"
   },
   {
-    "giftImage": "https://i.imgur.com/Y3GQXhF.png",
-    "rewardImage": "https://i.imgur.com/Kq5bY2s.png",
-    "description": "Lluvia de lava"
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/eb77ead5c3abb6da6034d3cf6cfeb438~tplv-obj.webp",
+    "rewardImage": "./images/zombie_diamond.png",
+    "description": "Armadura de diamante"
   },
   {
-    "giftImage": "https://i.imgur.com/vmN5b4F.png",
-    "rewardImage": "https://i.imgur.com/Y4n9R4p.png",
-    "description": "Invocar jefe"
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/8c99c5571344afb435282096db3edf3f.png~tplv-obj.webp",
+    "rewardImage": "./images/Taichi.png",
+    "description": "Tachi"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a4c4dc437fd3a6632aba149769491f49.png~tplv-obj.webp",
+    "rewardImage": "./images/Escudo.png",
+    "description": "Escudo"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/4e7ad6bdf0a1d860c538f38026d4e812~tplv-obj.webp",
+    "rewardImage": "./images/Espadon.png",
+    "description": "Espadón"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/20b8f61246c7b6032777bb81bf4ee055~tplv-obj.webp",
+    "rewardImage": "./images/Espada_Larga.png",
+    "description": "Espada larga"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/a2d81f3847457be9083a9c76a59b08cb~tplv-obj.webp",
+    "rewardImage": "./images/Mangual.png",
+    "description": "Mangual"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/be411636ecbd2b0aa314f85abed7042b.png~tplv-obj.webp",
+    "rewardImage": "./images/Totem.png",
+    "description": "Tótem"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/37f5c76b65c17d6dbbbd4b6724f61bf2~tplv-obj.webp",
+    "rewardImage": "./images/Morguenstein.png",
+    "description": "Maza"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/maliva/webcast-va/98bea1b189fba75bf0ca766b4dc1976e.png~tplv-obj.webp",
+    "rewardImage": "./images/Esqueleto.png",
+    "description": "Esqueleto"
+  },
+  {
+    "giftImage": "./images/TapTap.png",
+    "rewardImage": "./images/Aldeano.png",
+    "description": "Sube de nivel al aldeano"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/6703facdac34caefbd0617a6321afe9b.png~tplv-obj.webp",
+    "rewardImage": "./images/Alpin.png",
+    "description": "AlshPiess"
+  },
+  {
+    "giftImage": "https://p16-webcast.tiktokcdn.com/img/alisg/webcast-sg/resource/579f1709202892e0356e526fccfcc3c0.png~tplv-obj.webp",
+    "rewardImage": "./images/Arm_Caballero.png",
+    "description": "Armadura caballero"
   }
 ]
   </textarea>
@@ -167,40 +239,51 @@ let gifts = [];
 let index = 0;
 const VISIBLE = 16;
 const overlay = document.getElementById("overlay");
+let animating = false;
 
 function loadGifts() {
   try {
     gifts = JSON.parse(document.getElementById("jsonInput").value);
     index = 0;
-    render();
+    render(true);
   } catch {
     alert("JSON inválido");
   }
 }
 
-function render() {
-  overlay.innerHTML = "";
+function render(initial = false) {
+  if (animating || gifts.length === 0) return;
+  animating = true;
 
-  for (let i = 0; i < VISIBLE; i++) {
-    const gift = gifts[(index + i) % gifts.length];
+  overlay.querySelectorAll(".card").forEach(card => {
+    card.style.animation = "cardOut 0.4s ease forwards";
+  });
 
-    const card = document.createElement("div");
-    card.className = "card";
+  setTimeout(() => {
+    overlay.innerHTML = "";
 
-    card.innerHTML = `
-      <img class="gift-img" src="${gift.giftImage}">
-      <img class="reward-img" src="${gift.rewardImage}">
-      <div class="desc">${gift.description}</div>
-    `;
+    for (let i = 0; i < VISIBLE; i++) {
+      const gift = gifts[(index + i) % gifts.length];
+      const card = document.createElement("div");
+      card.className = "card";
+      card.style.animationDelay = `${i * 0.04}s`;
 
-    overlay.appendChild(card);
-  }
+      card.innerHTML = `
+        <img class="gift-img" src="${gift.giftImage}">
+        <img class="reward-img" src="${gift.rewardImage}">
+        <div class="desc">${gift.description}</div>
+      `;
 
-  index = (index + VISIBLE) % gifts.length;
+      overlay.appendChild(card);
+    }
+
+    index = (index + VISIBLE) % gifts.length;
+    animating = false;
+  }, initial ? 0 : 450);
 }
 
 loadGifts();
-setInterval(render, 6000); // rotación
+setInterval(render, 6500);
 </script>
 
 </body>
