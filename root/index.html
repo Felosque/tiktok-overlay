@@ -5,111 +5,123 @@
 <title>Overlay Regalos Minecraft</title>
 
 <style>
-  body {
-    margin: 0;
-    background: transparent;
-    font-family: Arial, sans-serif;
-    color: white;
-    overflow: hidden;
-  }
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+  font-family: 'Minecraftia', Arial, sans-serif;
+  color: #fff;
+}
 
-  /* PANEL EDITOR */
-  .editor {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    width: 420px;
-    background: rgba(0,0,0,0.85);
-    border-radius: 10px;
-    padding: 10px;
-    z-index: 9999;
-  }
+/* ================= EDITOR ================= */
+.editor {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 420px;
+  background: rgba(0,0,0,0.9);
+  border: 3px solid #55ff55;
+  border-radius: 10px;
+  padding: 10px;
+  z-index: 9999;
+}
 
-  .editor textarea {
-    width: 100%;
-    height: 260px;
-    background: #111;
-    color: #00ff88;
-    border: 1px solid #00ff88;
-    resize: none;
-    font-family: monospace;
-    font-size: 12px;
-  }
+.editor h3 {
+  margin: 0 0 6px 0;
+  color: #55ff55;
+  text-align: center;
+}
 
-  .editor button {
-    width: 100%;
-    margin-top: 8px;
-    padding: 8px;
-    background: #00ff88;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-  }
+.editor textarea {
+  width: 100%;
+  height: 260px;
+  background: #111;
+  color: #55ff55;
+  border: 2px solid #55ff55;
+  resize: none;
+  font-family: monospace;
+  font-size: 12px;
+}
 
-  /* OVERLAY */
-  .overlay {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 900px;
-    display: flex;
-    gap: 16px;
-  }
+.editor button {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  background: #55ff55;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-  .gift {
-    flex: 1;
-    background: rgba(20,20,20,0.9);
-    border: 2px solid #00ff88;
-    border-radius: 14px;
-    padding: 10px;
-    text-align: center;
-    animation: fadeIn 0.6s ease;
-  }
+/* ================= OVERLAY ================= */
+.overlay {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1000px;
+  display: flex;
+  gap: 16px;
+}
 
-  .gift img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    margin-bottom: 6px;
-  }
+.gift {
+  flex: 1;
+  background: rgba(20,20,20,0.9);
+  border: 3px solid #55ff55;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  animation: enter 0.6s ease;
+}
 
-  .gift-name {
-    color: #00ff88;
-    font-weight: bold;
-    font-size: 16px;
-  }
+.gift img {
+  image-rendering: pixelated;
+}
 
-  .description {
-    font-size: 13px;
-    margin: 4px 0;
-  }
+.gift-icon {
+  width: 56px;
+  height: 56px;
+}
 
-  .reward-img {
-    width: 48px;
-    height: 48px;
-    margin-top: 4px;
-  }
+.reward-icon {
+  width: 42px;
+  height: 42px;
+  margin-top: 6px;
+}
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+.gift-name {
+  margin-top: 6px;
+  color: #55ff55;
+  font-size: 15px;
+}
+
+.description {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #fff799;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 </style>
 </head>
 
 <body>
 
-<!-- EDITOR JSON -->
+<!-- ================= EDITOR ================= -->
 <div class="editor">
-  <strong>Editar regalos (JSON)</strong>
+  <h3>Editor de Regalos (JSON)</h3>
   <textarea id="jsonInput">
 [
   {
@@ -140,55 +152,66 @@
     "giftImage": "https://i.imgur.com/vmN5b4F.png",
     "giftName": "Universo",
     "rewardImage": "https://i.imgur.com/Y4n9R4p.png",
-    "description": "Boss final"
+    "description": "Invocar jefe final"
   }
 ]
   </textarea>
   <button onclick="loadGifts()">Actualizar overlay</button>
 </div>
 
-<!-- OVERLAY -->
+<!-- ================= OVERLAY ================= -->
 <div class="overlay" id="overlay"></div>
 
 <script>
-  let gifts = [];
-  let index = 0;
-  const overlay = document.getElementById("overlay");
+/* ======= MODO EDITOR / OVERLAY ======= */
+const params = new URLSearchParams(window.location.search);
+const editMode = params.get("edit") === "true";
 
-  function loadGifts() {
-    try {
-      gifts = JSON.parse(document.getElementById("jsonInput").value);
-      index = 0;
-      render();
-    } catch (e) {
-      alert("JSON inválido");
-    }
+if (!editMode) {
+  document.querySelector(".editor").style.display = "none";
+}
+
+/* ======= LOGICA REGALOS ======= */
+let gifts = [];
+let index = 0;
+const overlay = document.getElementById("overlay");
+
+function loadGifts() {
+  try {
+    gifts = JSON.parse(document.getElementById("jsonInput").value);
+    index = 0;
+    render();
+  } catch (e) {
+    alert("JSON inválido");
+  }
+}
+
+function render() {
+  if (gifts.length === 0) return;
+
+  overlay.innerHTML = "";
+
+  for (let i = 0; i < 4; i++) {
+    const gift = gifts[(index + i) % gifts.length];
+
+    const div = document.createElement("div");
+    div.className = "gift";
+
+    div.innerHTML = `
+      <img class="gift-icon" src="${gift.giftImage}">
+      <div class="gift-name">${gift.giftName}</div>
+      <div class="description">${gift.description}</div>
+      <img class="reward-icon" src="${gift.rewardImage}">
+    `;
+
+    overlay.appendChild(div);
   }
 
-  function render() {
-    overlay.innerHTML = "";
+  index = (index + 1) % gifts.length;
+}
 
-    for (let i = 0; i < 4; i++) {
-      const gift = gifts[(index + i) % gifts.length];
-
-      const div = document.createElement("div");
-      div.className = "gift";
-
-      div.innerHTML = `
-        <img src="${gift.giftImage}">
-        <div class="gift-name">${gift.giftName}</div>
-        <div class="description">${gift.description}</div>
-        <img class="reward-img" src="${gift.rewardImage}">
-      `;
-
-      overlay.appendChild(div);
-    }
-
-    index = (index + 1) % gifts.length;
-  }
-
-  loadGifts();
-  setInterval(render, 5000); // rotación cada 5 segundos
+loadGifts();
+setInterval(render, 5000); // rotación cada 5s
 </script>
 
 </body>
